@@ -36,7 +36,7 @@ body{
 .space-glow {
   position: fixed;
   inset: 0;
-  z-index: -2;
+  z-index: -1;
   pointer-events: none;
 
   background-image:
@@ -71,6 +71,8 @@ body{
 }
 
 body {
+  position: relative;
+  isolation: isolate;
   background-color: #03050a;
 }
 @keyframes nebulaDrift{
