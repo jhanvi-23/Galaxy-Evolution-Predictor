@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Galaxy Evolution Predictor — a machine-learning project using KiDS DR4 catalogue data to estimate stellar mass and star formation rate." />
+  <title>Galaxy Evolution | Machine Learning Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#070b17;--panel:#10182b;--panel2:#0c1324;--text:#eef3ff;--muted:#a4b0c8;--line:rgba(177,196,255,.14);--cyan:#76e4ed;--violet:#a99aff;--gold:#f3d69a;--max:1160px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 80% 0%,rgba(96,76,190,.18),transparent 34%),radial-gradient(ellipse at 8% 28%,rgba(42,137,163,.13),transparent 28%),var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;line-height:1.65}
+    a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 44px));margin:auto}.mono,.eyebrow,.tag{font-family:'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase}.nav{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.02em}.brand-mark{width:34px;height:34px;border:1px solid rgba(118,228,237,.55);border-radius:50%;display:grid;place-items:center;color:var(--cyan);box-shadow:0 0 24px rgba(118,228,237,.16)}.links{display:flex;gap:25px;color:var(--muted);font-size:13px}.links a:hover{color:var(--cyan)}
+    .hero{min-height:650px;display:grid;grid-template-columns:1.12fr .88fr;align-items:center;gap:44px;padding:76px 0 86px}.eyebrow{font-size:11px;color:var(--cyan)}h1{font-size:clamp(44px,6vw,76px);line-height:1.04;letter-spacing:-.065em;margin:22px 0 24px;max-width:720px}.gradient{background:linear-gradient(100deg,#fff 12%,#a7eaf0 52%,#b9a8ff 90%);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{color:#b4bfd5;font-size:17px;max-width:620px}.actions{display:flex;gap:13px;flex-wrap:wrap;margin-top:32px}.btn{padding:13px 19px;border-radius:8px;font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);transition:.2s}.btn.primary{background:var(--cyan);color:#07121d;border-color:var(--cyan)}.btn.secondary{background:rgba(255,255,255,.03)}.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}.hero-art{height:420px;position:relative;display:grid;place-items:center}.orb{width:min(360px,80vw);aspect-ratio:1;border-radius:50%;position:relative;background:radial-gradient(circle at 38% 34%,#d8eaff 0 1%,#9a9aff 4%,#5c64b4 13%,#202c59 34%,#0a1023 63%,transparent 70%);filter:drop-shadow(0 0 55px rgba(119,118,255,.28))}.orb:before,.orb:after{content:'';position:absolute;inset:16% -12%;border:1px solid rgba(137,224,239,.52);border-radius:50%;transform:rotate(-24deg)}.orb:after{inset:28% -17%;transform:rotate(31deg);border-color:rgba(183,158,255,.55)}.orbit-dot{position:absolute;width:11px;height:11px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px var(--cyan);top:17%;right:19%}.art-label{position:absolute;bottom:25px;right:0;color:#8594b5;font:10px 'DM Mono';letter-spacing:.13em}
+    .strip{border-block:1px solid var(--line);background:rgba(255,255,255,.018)}.stats{display:grid;grid-template-columns:repeat(4,1fr);padding:25px 0}.stat{padding:5px 24px;border-right:1px solid var(--line)}.stat:first-child{padding-left:0}.stat:last-child{border:0}.stat strong{font-size:27px;letter-spacing:-.04em;display:block}.stat span{font-size:10px;color:var(--muted);font-family:'DM Mono';letter-spacing:.1em;text-transform:uppercase}
+    section{padding:90px 0}.section-head{max-width:670px;margin-bottom:34px}.section-head h2{font-size:clamp(30px,4vw,45px);line-height:1.12;letter-spacing:-.05em;margin:13px 0}.section-head p{color:var(--muted);margin:0}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}.card{background:linear-gradient(145deg,rgba(20,31,54,.92),rgba(11,18,34,.9));border:1px solid var(--line);border-radius:14px;padding:25px}.card h3{margin:8px 0 9px;font-size:18px}.card p{color:var(--muted);font-size:14px;margin:0}.card .num{font:11px 'DM Mono';color:var(--cyan)}.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.metric{padding:24px;border:1px solid var(--line);border-radius:13px;background:rgba(14,23,42,.72)}.metric h3{font-size:15px;margin:0 0 18px}.metric-values{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric-values b{display:block;font-size:20px;letter-spacing:-.04em}.metric-values small{color:var(--muted);font:9px 'DM Mono';text-transform:uppercase;letter-spacing:.1em}.note{margin-top:18px;color:#aebbd2;font-size:12px;border-left:2px solid var(--gold);padding:10px 14px;background:rgba(243,214,154,.05)}
+    .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.figure{border:1px solid var(--line);background:#fff;border-radius:12px;overflow:hidden}.figure img{width:100%;display:block;aspect-ratio:1.5;object-fit:contain}.figure figcaption{padding:13px 16px;background:#10182b;color:#c5d0e4;font-size:12px}.figure figcaption span{color:var(--cyan);font:10px 'DM Mono';display:block;margin-bottom:3px}
+    .cta{border:1px solid rgba(118,228,237,.25);border-radius:18px;padding:38px;background:radial-gradient(ellipse at 100% 0%,rgba(118,228,237,.13),transparent 55%),#10182b;display:flex;align-items:center;justify-content:space-between;gap:28px}.cta h2{font-size:32px;letter-spacing:-.05em;margin:5px 0}.cta p{color:var(--muted);margin:0;max-width:620px;font-size:14px}.footer{border-top:1px solid var(--line);padding:27px 0;color:#7f8da8;font-size:11px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.smallcaps{font:10px 'DM Mono';letter-spacing:.12em;color:var(--cyan);text-transform:uppercase}
+    @media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:60px;gap:0}.hero-art{height:330px}.links{gap:12px;font-size:11px}.stats{grid-template-columns:repeat(2,1fr);row-gap:18px}.stat:nth-child(2){border:0}.method-grid{grid-template-columns:1fr}.cta{display:block}.cta .btn{margin-top:20px}}
+    @media(max-width:560px){.wrap{width:min(var(--max),calc(100% - 30px))}.links a:nth-child(2),.links a:nth-child(3){display:none}.grid2,.metric-grid,.gallery{grid-template-columns:1fr}.metric-values b{font-size:18px}.stat{padding:5px 12px}.stat strong{font-size:23px}section{padding:66px 0}.hero{min-height:auto}.hero-art{height:280px}.orb{width:235px}.cta{padding:25px}}
+  </style>
+</head>
+<body>
+  <header class="wrap nav">
+    <a class="brand" href="#top"><span class="brand-mark">✦</span><span>GALAXY <span style="color:var(--cyan)">EVOLUTION</span></span></a>
+    <nav class="links"><a href="#project">Project</a><a href="#method">Methodology</a><a href="#results">Results</a><a href="#graphs">Graphs</a></nav>
+  </header>
+  <main id="top">
+    <div class="wrap hero">
+      <div>
+        <div class="eyebrow">ASTRONOMY × MACHINE LEARNING / 2026</div>
+        <h1>Reading the story of <span class="gradient">galaxies</span> through data.</h1>
+        <p class="lead">A supervised machine-learning project using the KiDS DR4 galaxy catalogue to estimate stellar mass and star formation rate from photometric measurements and redshift information.</p>
+        <div class="actions"><a class="btn primary" href="https://galaxy-evolution-predictor.onrender.com" target="_blank" rel="noopener">Launch galaxy predictor ↗</a><a class="btn secondary" href="#project">Explore the research ↓</a></div>
+      </div>
+      <div class="hero-art" aria-label="Abstract glowing galaxy illustration"><div class="orb"><span class="orbit-dot"></span></div><div class="art-label">KIDS DR4 · DATA-DRIVEN GALAXY STUDY</div></div>
+    </div>
+    <div class="strip"><div class="wrap stats">
+      <div class="stat"><strong>288,809</strong><span>Catalogue records</span></div>
+      <div class="stat"><strong>19</strong><span>Input features</span></div>
+      <div class="stat"><strong>2</strong><span>Prediction targets</span></div>
+      <div class="stat"><strong>60 / 20 / 20</strong><span>Train / validation / test</span></div>
+    </div></div>
+    <section id="project" class="wrap">
+      <div class="section-head"><div class="eyebrow">01 / THE PROJECT</div><h2>Turning astronomical observations into predictions.</h2><p>The project builds two separate regression models from a large photometric galaxy catalogue. The goal is to reproduce the catalogue's estimated stellar-mass and star-formation-rate values from a consistent set of input features.</p></div>
+      <div class="grid2">
+        <article class="card"><div class="num">TARGET 01</div><h3>Stellar mass</h3><p>Predicts the catalogue estimate stored in <code>MASS_MED_GaZNet</code>, using nine GAaP magnitude bands, their associated errors, and GaZNet redshift.</p></article>
+        <article class="card"><div class="num">TARGET 02</div><h3>Star formation rate</h3><p>Predicts the catalogue estimate stored in <code>SFR_MED_GaZNet</code> using the same 19 input features, with separate model fitting and evaluation.</p></article>
+      </div>
+    </section>
+    <section id="method" style="background:rgba(255,255,255,.018);border-block:1px solid var(--line)">
+      <div class="wrap"><div class="section-head"><div class="eyebrow">02 / METHODOLOGY</div><h2>A reproducible modelling workflow.</h2><p>Two regression approaches were compared. Model selection used validation performance, and the selected model was evaluated on a held-out test set.</p></div>
+        <div class="method-grid">
+          <article class="card"><div class="num">STEP 01</div><h3>Catalogue preparation</h3><p>KiDS DR4 data were audited and 19 predictors plus two target columns were selected. No missing values were found in the selected modelling columns.</p></article>
+          <article class="card"><div class="num">STEP 02</div><h3>Model comparison</h3><p>Ridge Regression with standardisation was compared against HistGradientBoostingRegressor, with separate estimators for each target.</p></article>
+          <article class="card"><div class="num">STEP 03</div><h3>Evaluation & diagnostics</h3><p>MAE, RMSE and R² were measured on the held-out test set. Residuals, subgroup behaviour and feature importance were also examined.</p></article>
+        </div>
+      </div>
+    </section>
+    <section id="results" class="wrap">
+      <div class="section-head"><div class="eyebrow">03 / TEST-SET RESULTS</div><h2>Two targets. Different levels of predictability.</h2><p>HistGradientBoosting was selected for both targets based on validation results. The following metrics are from the final held-out test set.</p></div>
+      <div class="metric-grid">
+        <article class="metric"><div class="smallcaps">Stellar mass · HistGradientBoosting</div><h3>Strong catalogue-target reproduction</h3><div class="metric-values"><div><b>0.0994</b><small>MAE</small></div><div><b>0.1404</b><small>RMSE</small></div><div><b>0.9550</b><small>R²</small></div></div></article>
+        <article class="metric"><div class="smallcaps">Star formation rate · HistGradientBoosting</div><h3>Moderate overall performance</h3><div class="metric-values"><div><b>0.6504</b><small>MAE</small></div><div><b>1.5884</b><small>RMSE</small></div><div><b>0.5484</b><small>R²</small></div></div></article>
+      </div>
+      <div class="note"><strong>Scientific caution:</strong> These models predict GaZNet-associated catalogue estimates, not independently verified physical ground truth. GaZNet is also an input feature, so shared catalogue information may contribute to the strong stellar-mass result. Target units and exact logarithmic conventions were not confirmed; metrics are reported in the targets' native numerical scales.</div>
+    </section>
+    <section id="graphs" style="background:rgba(255,255,255,.018);border-block:1px solid var(--line)">
+      <div class="wrap"><div class="section-head"><div class="eyebrow">04 / MODEL DIAGNOSTICS</div><h2>Looking beyond a single score.</h2><p>Test-set plots help inspect prediction agreement and the distribution of model errors.</p></div>
+        <div class="gallery">
+          <figure class="figure"><img src="assets/stellar_mass_prediction.png" alt="Actual versus predicted stellar mass test-set plot"><figcaption><span>FIGURE 01</span>Actual vs. predicted stellar mass</figcaption></figure>
+          <figure class="figure"><img src="assets/sfr_prediction.png" alt="Actual versus predicted star formation rate test-set plot"><figcaption><span>FIGURE 02</span>Actual vs. predicted star formation rate</figcaption></figure>
+          <figure class="figure"><img src="assets/stellar_mass_residuals.png" alt="Stellar mass residual distribution"><figcaption><span>FIGURE 03</span>Stellar-mass residual distribution</figcaption></figure>
+          <figure class="figure"><img src="assets/sfr_residuals_by_group.png" alt="Star formation rate residuals by quality group"><figcaption><span>FIGURE 04</span>SFR residuals by target group</figcaption></figure>
+        </div>
+      </div>
+    </section>
+    <section class="wrap">
+      <div class="cta"><div><div class="eyebrow">05 / INTERACTIVE DEMO</div><h2>Try the trained prediction models.</h2><p>Open the deployed application to enter the 19 input values and generate stellar-mass and star-formation-rate predictions using the saved models.</p></div><a class="btn primary" href="https://galaxy-evolution-predictor.onrender.com" target="_blank" rel="noopener">Open predictor ↗</a></div>
+    </section>
+  </main>
+  <footer class="wrap footer"><span>GALAXY EVOLUTION · MACHINE LEARNING PROJECT</span><span>KiDS DR4 · HistGradientBoosting · 2026</span></footer>
+</body>
+</html>
