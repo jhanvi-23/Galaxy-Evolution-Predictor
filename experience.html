@@ -1,0 +1,572 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore & Predict | Galaxy Evolution Predictor</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #050713;
+  --panel: rgba(17,23,47,.78);
+  --text: #edf1ff;
+  --muted: #a0aac7;
+  --cyan: #73e5f5;
+  --violet: #a78bfa;
+  --line: rgba(170,190,255,.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Manrope, sans-serif;
+  overflow-x: hidden;
+}
+#stars {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 15%, #543d991e, transparent 35%),
+    radial-gradient(ellipse at 85% 50%, #198ca01a, transparent 38%),
+    linear-gradient(180deg,#050713,#090b1d 55%,#050713);
+}
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 17px 7%;
+  background: rgba(5,7,19,.85);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-weight: 800; letter-spacing: -.6px; }
+.brand span { color: var(--cyan); }
+.navlinks { display: flex; gap: 25px; }
+.navlinks a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  transition: .25s;
+}
+.navlinks a:hover, .navlinks a.active { color: var(--cyan); }
+
+.hero {
+  min-height: 76vh;
+  padding: 85px 8%;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  align-items: center;
+  gap: 30px;
+}
+.eyebrow, .tag {
+  color: var(--cyan);
+  font: 11px 'DM Mono',monospace;
+  letter-spacing: 2.5px;
+  margin-bottom: 18px;
+}
+h1 {
+  font-size: clamp(43px,6vw,76px);
+  line-height: 1.05;
+  letter-spacing: -3.5px;
+  margin-bottom: 24px;
+}
+.gradient {
+  background: linear-gradient(100deg,#8ceafa,#a78bfa 65%,#e3b7ff);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.hero p, .intro {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 590px;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 30px;
+}
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  padding: 13px 20px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: .25s;
+}
+.btn-primary {
+  color: #06101b;
+  background: linear-gradient(100deg,#73e5f5,#a78bfa);
+}
+.btn-secondary {
+  color: var(--text);
+  border: 1px solid var(--line);
+  background: #ffffff08;
+}
+.btn:hover { transform: translateY(-3px); filter: brightness(1.12); }
+
+/* Original animated galaxy illustration */
+.space-art {
+  height: 430px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.galaxy {
+  width: 280px;
+  height: 280px;
+  position: relative;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle,#050713 0 9%,#d5c8ff 10%,#7b6ce5 13%,transparent 17%),
+    radial-gradient(ellipse at center,transparent 25%,#9b7dff55 28%,transparent 42%),
+    radial-gradient(ellipse at center,transparent 40%,#61dff055 45%,transparent 55%);
+  filter: drop-shadow(0 0 30px #8c72ff55);
+  animation: galaxyTurn 28s linear infinite;
+}
+.galaxy::before, .galaxy::after {
+  content: "";
+  position: absolute;
+  inset: 12px -35px;
+  border: 2px solid #9c8aff66;
+  border-radius: 50%;
+  transform: rotate(-25deg) scaleY(.32);
+  box-shadow: 0 0 20px #8f79ff44;
+}
+.galaxy::after {
+  inset: 45px -50px;
+  border-color: #69e9f566;
+  transform: rotate(35deg) scaleY(.25);
+}
+.galaxy-core {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 25px 12px #b29bff99,0 0 65px 30px #68dcff44;
+}
+.quasar {
+  position: absolute;
+  width: 3px;
+  height: 390px;
+  background: linear-gradient(transparent,#8defff,#c6a5ff,transparent);
+  filter: drop-shadow(0 0 10px #80eaff);
+  transform: rotate(22deg);
+  animation: jetPulse 3s ease-in-out infinite;
+}
+@keyframes galaxyTurn { to { transform: rotate(360deg); } }
+@keyframes jetPulse {
+  50% { opacity: .45; transform: rotate(22deg) scaleY(.8); }
+}
+
+/* General sections */
+section { padding: 75px 8%; }
+h2 {
+  font-size: clamp(29px,4vw,43px);
+  letter-spacing: -1.6px;
+  margin-bottom: 15px;
+}
+.intro { margin-bottom: 32px; }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 27px;
+}
+.panel h3 { font-size: 19px; margin-bottom: 12px; }
+.panel p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.85;
+}
+.demo-wrap {
+  margin-top: 28px;
+  padding: 12px;
+  border: 1px solid #73e5f544;
+  border-radius: 19px;
+  background: linear-gradient(135deg,#73e5f50d,#a78bfa0d);
+  box-shadow: 0 0 55px #5573ce13;
+}
+.demo-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 10px 12px 18px;
+}
+.demo-top span {
+  font: 10px 'DM Mono',monospace;
+  letter-spacing: 1.5px;
+  color: var(--cyan);
+}
+.status {
+  font-size: 10px;
+  color: #8cf0c0;
+}
+iframe {
+  width: 100%;
+  height: 690px;
+  border: none;
+  border-radius: 12px;
+  background: #080b19;
+}
+.demo-fallback {
+  margin-top: 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.demo-fallback a { color: var(--cyan); }
+
+.report-grid {
+  display: grid;
+  grid-template-columns: .8fr 1.2fr;
+  gap: 22px;
+  margin-top: 30px;
+}
+.report-art {
+  min-height: 300px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle,#29204e,#10152c 55%,#080b19);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.report-orbit {
+  width: 175px;
+  height: 175px;
+  border: 1px solid #9b8aff88;
+  border-radius: 50%;
+  box-shadow: 0 0 40px #8c72ff33;
+  animation: galaxyTurn 22s linear infinite;
+  position: relative;
+}
+.report-orbit::before, .report-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 25px -28px;
+  border: 1px solid #73e5f588;
+  border-radius: 50%;
+  transform: scaleY(.35) rotate(40deg);
+}
+.report-orbit::after {
+  transform: scaleY(.35) rotate(-40deg);
+  border-color: #b49aff88;
+}
+.report-core {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 35px 15px #8f7aff99;
+}
+.report-info { padding: 30px; }
+.report-info ul {
+  margin: 20px 0 25px 18px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 2.1;
+}
+.report-info .btn { margin: 5px 8px 5px 0; }
+.caution {
+  margin-top: 24px;
+  padding: 17px 20px;
+  border-left: 2px solid var(--violet);
+  background: #a78bfa0b;
+  color: #b9c2df;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.end-card {
+  text-align: center;
+  padding: 60px 25px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: radial-gradient(ellipse at center,#24204b88,transparent 75%);
+}
+.end-card h2 { margin-bottom: 15px; }
+.end-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  max-width: 570px;
+  margin: 0 auto 25px;
+}
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 50px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.page-nav a { color: var(--cyan); text-decoration: none; font-size: 13px; }
+footer {
+  border-top: 1px solid var(--line);
+  padding: 30px 8%;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 11px;
+}
+@media(max-width:800px) {
+  .hero { grid-template-columns: 1fr; padding-top: 70px; }
+  .space-art { height: 330px; }
+  .report-grid { grid-template-columns: 1fr; }
+  iframe { height: 720px; }
+}
+@media(max-width:560px) {
+  nav { padding: 15px 5%; }
+  .navlinks { gap: 10px; }
+  .navlinks a { font-size: 10px; }
+  section { padding: 55px 6%; }
+  .hero { padding: 65px 6%; }
+  h1 { letter-spacing: -2px; }
+  .space-art { height: 270px; }
+  .galaxy { transform: scale(.75); }
+  iframe { height: 760px; }
+  .demo-top { align-items: flex-start; flex-direction: column; }
+  footer { flex-direction: column; gap: 10px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<canvas id="stars"></canvas>
+
+<nav>
+  <div class="brand">GALAXY <span>EVOLUTION</span></div>
+  <div class="navlinks">
+    <a href="index.html">01 Research</a>
+    <a href="results.html">02 Evidence</a>
+    <a class="active" href="experience.html">03 Explore</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div>
+    <div class="eyebrow">03 / THE EXPERIENCE · EXPLORE & PREDICT</div>
+    <h1>From cosmic<br>data to <span class="gradient">discovery.</span></h1>
+    <p>
+      Step into the prediction environment. Explore how astronomical
+      catalogue features can be used by machine-learning models to estimate
+      stellar mass and star-formation rate.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#predictor">Launch prediction demo ↗</a>
+      <a class="btn btn-secondary" href="#report">Explore scientific report ↓</a>
+    </div>
+  </div>
+
+  <div class="space-art">
+    <div class="quasar"></div>
+    <div class="galaxy">
+      <div class="galaxy-core"></div>
+    </div>
+  </div>
+</header>
+
+<section id="predictor">
+  <div class="tag">01 — INTERACTIVE PREDICTION LAB</div>
+  <h2>Explore a galaxy. <span class="gradient">Estimate its properties.</span></h2>
+  <p class="intro">
+    Use the live application to generate stellar-mass and star-formation-rate
+    predictions. The application connects to the separately deployed
+    machine-learning service.
+  </p>
+
+  <div class="panel">
+    <h3>Galaxy Evolution Predictor</h3>
+    <p>
+      The prediction system uses nine GAaP magnitude bands, their associated
+      measurement errors and GaZNet redshift as input features. Two separate
+      trained regression models estimate the two catalogue targets.
+    </p>
+  </div>
+
+  <div class="demo-wrap">
+    <div class="demo-top">
+      <span>LIVE APPLICATION / RENDER DEPLOYMENT</span>
+      <div class="status">● APPLICATION LINK</div>
+    </div>
+
+    <iframe
+      src="https://galaxy-evolution-predictor.onrender.com"
+      title="Galaxy Evolution Predictor live application"
+      loading="lazy"
+      allow="clipboard-read; clipboard-write">
+    </iframe>
+  </div>
+
+  <div class="demo-fallback">
+    If the embedded application does not load, open it directly:
+    <a href="https://galaxy-evolution-predictor.onrender.com" target="_blank" rel="noopener">
+      Launch Galaxy Evolution Predictor ↗
+    </a>
+    <br>
+    The first request may take a little time if the free hosting service is waking up.
+  </div>
+
+  <div class="caution">
+    Predictions reproduce the catalogue's estimated target values.
+    They should not be interpreted as independently verified measurements
+    of a galaxy's physical properties.
+  </div>
+</section>
+
+<section id="report">
+  <div class="tag">02 — SCIENTIFIC PROJECT REPORT</div>
+  <h2>The research, <span class="gradient">documented.</span></h2>
+  <p class="intro">
+    Explore the complete project report, including the dataset, methodology,
+    model development, evaluation results and diagnostic analysis.
+  </p>
+
+  <div class="report-grid">
+    <div class="report-art">
+      <div class="report-orbit">
+        <div class="report-core"></div>
+      </div>
+    </div>
+
+    <div class="panel report-info">
+      <div class="tag">PROJECT DOCUMENTATION / PDF</div>
+      <h3>Galaxy Evolution ML — Final Report</h3>
+      <p>
+        A scientific and technical record of the machine-learning workflow,
+        from astronomical catalogue preparation to model evaluation.
+      </p>
+      <ul>
+        <li>KiDS DR4 galaxy catalogue overview</li>
+        <li>Feature selection and dataset preparation</li>
+        <li>Stellar mass and SFR model development</li>
+        <li>Test-set evaluation and error analysis</li>
+        <li>Prediction application and deployment</li>
+      </ul>
+
+      <a class="btn btn-primary"
+         href="Galaxy_Evolution_ML_Final_Report.pdf"
+         target="_blank" rel="noopener">
+        Read full report ↗
+      </a>
+
+      <a class="btn btn-secondary"
+         href="Galaxy_Evolution_ML_Final_Report.pdf"
+         download>
+        Download PDF ↓
+      </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="end-card">
+    <div class="tag">END OF THE JOURNEY · BEGINNING OF DISCOVERY</div>
+    <h2>Every galaxy has a story.</h2>
+    <p>
+      Through astronomical observations and machine learning, we can
+      investigate patterns in the properties of galaxies and explore
+      the processes that shape cosmic evolution.
+    </p>
+    <a class="btn btn-primary" href="index.html">Return to the beginning ↗</a>
+  </div>
+
+  <div class="page-nav">
+    <a href="results.html">← Previous: Results & Diagnostics</a>
+    <a href="index.html">Back to Research →</a>
+  </div>
+</section>
+
+<footer>
+  <span>GALAXY EVOLUTION PREDICTOR</span>
+  <span>Machine Learning × Astrophysics · 2026</span>
+</footer>
+
+<script>
+// Animated star field
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let w, h;
+
+function resize() {
+  w = canvas.width = window.innerWidth * devicePixelRatio;
+  h = canvas.height = window.innerHeight * devicePixelRatio;
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+
+  stars = Array.from({length: 150}, () => ({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    r: Math.random() * 1.5 + .3,
+    a: Math.random() * .7 + .2,
+    speed: Math.random() * .25 + .04
+  }));
+}
+
+function drawStars() {
+  ctx.clearRect(0, 0, w, h);
+
+  stars.forEach(s => {
+    s.y += s.speed * devicePixelRatio;
+    if (s.y > h) {
+      s.y = 0;
+      s.x = Math.random() * w;
+    }
+
+    const glow = s.a * (.65 + .35 * Math.sin(Date.now() * .001 + s.x));
+
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r * devicePixelRatio, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(190,220,255,${glow})`;
+    ctx.fill();
+  });
+
+  requestAnimationFrame(drawStars);
+}
+
+resize();
+drawStars();
+window.addEventListener('resize', resize);
+</script>
+</body>
+</html>
