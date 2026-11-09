@@ -1,399 +1,342 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galaxy Evolution | A Cosmic Observatory</title>
+<meta name="theme-color" content="#07090c">
+<meta name="description" content="Galaxy Evolution Predictor — a machine learning study of stellar mass and star formation using the KiDS DR4 galaxy catalogue.">
+<title>Galaxy Evolution | Cosmic Observatory</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --space:#08050d;
-  --panel:#110b19;
-  --panel2:#181020;
-  --purple:#9b55d4;
-  --violet:#66318e;
-  --pink:#dc599c;
-  --amber:#ffbd70;
-  --peach:#ef806c;
-  --lavender:#c4a8df;
-  --white:#f6effb;
-  --muted:#a99aaf;
-  --line:rgba(220,180,245,.15);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;background:var(--space);color:var(--white);
-  font-family:Manrope,sans-serif;overflow-x:hidden;
-}
-#stars{
-  position:fixed;inset:0;width:100%;height:100%;
-  z-index:-3;pointer-events:none;
-}/* FULL-PAGE DEEP-SPACE BACKGROUND */
-.space-glow {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(2, 4, 9, 0.43) 0%,
-      rgba(2, 4, 9, 0.60) 45%,
-      rgba(2, 4, 9, 0.84) 100%
-    ),
-    url("https://science.nasa.gov/wp-content/uploads/2023/04/hubble_m51-jpg-e1688472875538.webp");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+:root {
+  --bg: #07090c;
+  --bg-soft: #0c1015;
+  --text: #eeeae2;
+  --muted: #a3a39e;
+  --dim: #747873;
+  --gold: #c9a875;
+  --gold-light: #e3c99b;
+  --line: rgba(218, 199, 164, .16);
+  --serif: "Playfair Display", Georgia, serif;
+  --sans: "DM Sans", Arial, sans-serif;
+  --mono: "DM Mono", monospace;
 }
 
-/* Remove artificial coloured nebula blobs */
-.nebula {
-  display: none !important;
+* {
+  box-sizing: border-box;
 }
 
-/* Subtle cinematic movement */
-@media (prefers-reduced-motion: no-preference) {
-  .space-glow {
-    animation: deepSpaceCamera 65s ease-in-out infinite alternate;
-  }
-
-  @keyframes deepSpaceCamera {
-    from { background-position: 48% 48%; }
-    to   { background-position: 52% 52%; }
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
 }
 
 body {
-  position: relative;
-  isolation: isolate;
-  background-color: #03050a;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  overflow-x: hidden;
 }
-@keyframes nebulaDrift{
-  from{transform:translate(0,0) scale(.85)}
-  to{transform:translate(-65px,55px) scale(1.2)}
-}
-a{color:inherit;text-decoration:none}
-.nav{
-  position:sticky;top:0;z-index:20;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:17px 6%;background:rgba(8,5,13,.82);
-  border-bottom:1px solid var(--line);backdrop-filter:blur(18px);
-}
-.brand{display:flex;align-items:center;gap:12px;font-size:13px;letter-spacing:2px;font-weight:800}
-.brand-mark{
-  width:30px;height:30px;border:1px solid var(--pink);
-  border-radius:50%;position:relative;
-  box-shadow:0 0 17px rgba(220,89,156,.35);
-}
-.brand-mark:before{
-  content:"";position:absolute;width:37px;height:13px;
-  border:1px solid var(--amber);border-radius:50%;
-  top:7px;left:-5px;transform:rotate(-35deg);
-}
-.nav-links{display:flex;gap:28px;font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted)}
-.nav-links a{transition:.25s}
-.nav-links a:hover,.nav-links a.active{color:var(--amber)}
-.hero{
-  min-height:690px;padding:95px 8% 75px;position:relative;
-  display:grid;grid-template-columns:1.05fr .95fr;align-items:center;
-  gap:20px;overflow:hidden;
-}
-.eyebrow{
-  font:11px "DM Mono",monospace;letter-spacing:3px;
-  color:var(--amber);text-transform:uppercase;
-}
-.hero h1{
-  font-size:clamp(48px,7.3vw,100px);line-height:.99;
-  letter-spacing:-5px;margin:25px 0 22px;font-weight:500;
-}
-.hero h1 em{
-  font-family:"Playfair Display",serif;font-weight:500;
-  color:var(--pink);text-shadow:0 0 35px rgba(220,89,156,.3);
-}
-.hero-copy{max-width:510px;color:#b8aaba;font-size:15px;line-height:1.9}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
-.btn{
-  padding:13px 21px;border-radius:3px;font-size:11px;
-  letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
-  transition:.3s;display:inline-block;
-}
-.btn-primary{background:linear-gradient(110deg,#a3488d,#7041a1);color:white}
-.btn-primary:hover{box-shadow:0 0 28px #9b55d477;transform:translateY(-3px)}
-.btn-outline{border:1px solid #a77cba;color:var(--lavender)}
-.btn-outline:hover{border-color:var(--amber);color:var(--amber)}
-.hero-art{height:480px;position:relative;display:grid;place-items:center}
-.galaxy{
-  position:relative;width:min(440px,85vw);aspect-ratio:1;border-radius:50%;
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
   background:
-   radial-gradient(ellipse at 50% 50%,#fff2c9 0%,#ffb36c 2%,#df659d 5%,transparent 13%),
-   radial-gradient(ellipse at 50% 50%,transparent 15%,rgba(197,92,190,.3) 25%,transparent 48%);
-  filter:drop-shadow(0 0 25px rgba(192,78,164,.25));
-  animation:galaxyFloat 7s ease-in-out infinite;
-}
-.galaxy:before,.galaxy:after{
-  content:"";position:absolute;inset:8%;border-radius:50%;
-  background:repeating-conic-gradient(from 10deg,
-  transparent 0deg 9deg,rgba(226,128,198,.18) 10deg 13deg,
-  transparent 17deg 27deg,rgba(255,190,126,.12) 29deg 32deg);
-  mask:radial-gradient(ellipse,transparent 0 17%,#000 28% 55%,transparent 72%);
-  animation:spin 42s linear infinite;
-}
-.galaxy:after{
-  inset:20%;transform:rotate(55deg) scaleY(.48);
-  background:repeating-conic-gradient(transparent 0deg 12deg,rgba(255,190,126,.32) 13deg 15deg,transparent 18deg 32deg);
-  animation:spinReverse 30s linear infinite;
-}
-.galaxy-core{
-  position:absolute;left:50%;top:50%;width:30px;height:30px;
-  transform:translate(-50%,-50%);border-radius:50%;
-  background:#fff3d6;box-shadow:0 0 20px 9px #ffb36c,0 0 65px 28px #d44c9b;
-}
-.orbit{
-  position:absolute;border:1px solid rgba(239,170,220,.3);
-  width:115%;height:35%;border-radius:50%;
-  top:33%;left:-7%;transform:rotate(-24deg);
-}
-.orbit.two{transform:rotate(48deg);width:100%;left:0;border-color:rgba(255,190,126,.22)}
-.orbit-dot{
-  position:absolute;width:8px;height:8px;border-radius:50%;
-  background:var(--amber);box-shadow:0 0 15px 4px #ffb45c;
-  top:13%;left:18%;animation:dotOrbit 9s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes spinReverse{to{transform:rotate(-360deg)}}
-@keyframes galaxyFloat{50%{transform:translateY(-13px) scale(1.025)}}
-@keyframes dotOrbit{to{transform:rotate(360deg) translateX(145px) rotate(-360deg)}}
-.hero-caption{
-  position:absolute;bottom:15px;right:5%;font:10px "DM Mono",monospace;
-  color:#a78cae;letter-spacing:1.4px;
-}
-.scroll-note{
-  position:absolute;bottom:25px;left:8%;font:10px "DM Mono",monospace;
-  color:#8c7a91;letter-spacing:2px;
-}
-.section{padding:95px 8%;position:relative}
-.section-head{max-width:680px;margin-bottom:45px}
-.section-number{font:11px "DM Mono",monospace;color:var(--pink);letter-spacing:2px}
-.section h2{
-  font-size:clamp(32px,4.5vw,54px);font-weight:500;
-  letter-spacing:-2px;margin:13px 0 15px;
-}
-.section h2 em{font-family:"Playfair Display",serif;color:var(--amber);font-weight:500}
-.section-intro{color:var(--muted);line-height:1.9;font-size:14px}
-.overview-grid{
-  display:grid;grid-template-columns:1.1fr .9fr;gap:20px;
-}
-.story-card,.stat-card,.method-card{
-  background:linear-gradient(145deg,rgba(32,19,42,.86),rgba(15,9,22,.92));
-  border:1px solid var(--line);padding:30px;position:relative;overflow:hidden;
-}
-.story-card:after{
-  content:"";position:absolute;width:200px;height:200px;
-  border:1px solid rgba(220,89,156,.16);border-radius:50%;
-  right:-80px;bottom:-100px;box-shadow:0 0 0 22px rgba(220,89,156,.025),0 0 0 45px rgba(220,89,156,.02);
-}
-.story-card h3,.method-card h3{font-size:21px;font-weight:600;margin:0 0 14px}
-.story-card p,.method-card p{font-size:13px;color:#b4a6b8;line-height:1.9}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat-card{min-height:145px;padding:22px}
-.stat-value{font-size:34px;font-weight:700;color:var(--amber);letter-spacing:-1.5px}
-.stat-label{font:10px "DM Mono",monospace;letter-spacing:1.5px;color:#b9a7c2;margin-top:8px;text-transform:uppercase}
-.stat-card:nth-child(2) .stat-value{color:var(--pink)}
-.stat-card:nth-child(3) .stat-value{color:var(--lavender)}
-.stat-card:nth-child(4) .stat-value{color:var(--peach)}
-.targets{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
-.target{
-  border:1px solid var(--line);padding:20px;background:rgba(20,12,27,.72);
-}
-.target small{font:10px "DM Mono",monospace;color:var(--pink);letter-spacing:1.5px}
-.target h4{font-size:17px;margin:10px 0 7px}
-.target p{font-size:12px;color:var(--muted);line-height:1.7;margin:0}
-.method-section{
-  background:linear-gradient(180deg,transparent,rgba(49,19,54,.2),transparent);
-}
-.pipeline{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
-  position:relative;margin:45px 0 35px;
-}
-.pipeline:before{
-  content:"";position:absolute;top:27px;left:10%;right:10%;
-  height:1px;background:linear-gradient(90deg,var(--violet),var(--pink),var(--amber));
-  opacity:.6;
-}
-.step{position:relative;text-align:center;padding:0 10px}
-.step-orb{
-  width:55px;height:55px;border-radius:50%;margin:0 auto 18px;
-  display:grid;place-items:center;position:relative;z-index:1;
-  background:radial-gradient(circle at 35% 30%,#d88cc8,#58276f 65%,#170d20);
-  border:1px solid rgba(255,190,126,.5);
-  box-shadow:0 0 22px rgba(190,79,163,.2);
-  font:13px "DM Mono",monospace;color:white;
-}
-.step h4{font-size:13px;margin:0 0 8px}
-.step p{font-size:11px;color:var(--muted);line-height:1.7}
-.method-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
-.method-card{padding:25px}
-.method-card .tag{
-  font:10px "DM Mono",monospace;letter-spacing:1.4px;color:var(--amber);
-  margin-bottom:14px;display:block;
-}
-.method-card h3{font-size:18px}
-.feature-list{padding:0;margin:14px 0 0;list-style:none}
-.feature-list li{font-size:12px;color:#c1b3c7;padding:8px 0;border-top:1px solid rgba(220,180,245,.09)}
-.feature-list li:before{content:"✦";color:var(--pink);margin-right:10px}
-.halo-wrap{
-  margin-top:55px;padding:35px;border:1px solid var(--line);
-  background:radial-gradient(ellipse at 75% 50%,rgba(103,42,130,.2),transparent 45%),#100a17;
-  display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:center;
-}
-.halo-art{height:270px;position:relative;display:grid;place-items:center;overflow:hidden}
-.halo-ring{
-  position:absolute;width:235px;height:235px;border-radius:50%;
-  border:1px solid rgba(200,133,235,.35);
-  box-shadow:0 0 28px rgba(167,79,204,.17),inset 0 0 35px rgba(167,79,204,.12);
-  animation:haloPulse 5s ease-in-out infinite;
-}
-.halo-ring.r2{width:185px;height:185px;border-color:rgba(226,111,174,.4);animation-delay:-1.5s}
-.halo-ring.r3{width:125px;height:125px;border-color:rgba(255,190,126,.55);animation-delay:-3s}
-.halo-core{
-  width:35px;height:35px;border-radius:50%;
-  background:#e6a1d4;box-shadow:0 0 25px 10px #a34ebc,0 0 65px 25px #632d8c;
-}
-.halo-particle{
-  position:absolute;width:4px;height:4px;border-radius:50%;background:#f6b8e1;
-  box-shadow:0 0 10px #e69bd4;animation:particle 8s linear infinite;
-}
-.halo-particle.p2{animation-delay:-2s;left:22%;top:30%}
-.halo-particle.p3{animation-delay:-4s;left:75%;top:65%}
-.halo-particle.p4{animation-delay:-6s;left:68%;top:22%}
-@keyframes haloPulse{50%{transform:scale(1.08);opacity:.55}}
-@keyframes particle{to{transform:rotate(360deg) translateX(85px) rotate(-360deg)}}
-.halo-copy h3{font-size:24px;margin:0 0 13px}
-.halo-copy p{font-size:13px;line-height:1.9;color:var(--muted)}
-.caution{
-  font-size:11px!important;color:var(--amber)!important;
-  border-left:2px solid var(--amber);padding-left:13px;margin-top:18px;
-}
-footer{
-  border-top:1px solid var(--line);padding:30px 8%;
-  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
-  color:#8e7c96;font:10px "DM Mono",monospace;letter-spacing:1px;
-}
-footer a{color:var(--lavender)}
-@media(max-width:850px){
- .hero{grid-template-columns:1fr;padding-top:70px}
- .hero-art{height:380px}
- .overview-grid,.halo-wrap{grid-template-columns:1fr}
- .pipeline{grid-template-columns:repeat(2,1fr);row-gap:35px}
- .pipeline:before{display:none}
-}
-@media(max-width:560px){
- .nav{padding:14px 5%}.nav-links{gap:12px;font-size:9px}
- .brand{font-size:10px}.hero{padding:65px 6% 60px}
- .hero h1{letter-spacing:-2px}.hero-art{height:300px}
- .section{padding:70px 6%}
- .stats-grid,.targets,.method-grid{grid-template-columns:1fr 1fr}
- .story-card{padding:23px}.halo-wrap{padding:22px}
- footer{padding:25px 6%}
-}
-@media(prefers-reduced-motion:reduce){
- *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+    radial-gradient(ellipse at 75% 20%, rgba(111, 86, 63, .09), transparent 38%),
+    radial-gradient(ellipse at 15% 75%, rgba(73, 76, 83, .08), transparent 42%),
+    #07090c;
 }
 
-/* REAL COSMIC IMAGE — CINEMATIC MOTION */
-.hero-photo.hero-art {
+#stars {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(201, 168, 117, .3);
+  color: white;
+}
+
+/* NAVIGATION */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 72px;
+  padding: 0 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(7, 9, 12, .88);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.brand-mark {
+  width: 27px;
+  height: 27px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
   position: relative;
-  width: min(100%, 680px);
-  height: 430px;
-  margin: 35px auto;
-  overflow: hidden;
-  border-radius: 22px;
-  isolation: isolate;
-  background: #100817;
-  border: 1px solid rgba(205, 150, 255, 0.25);
-  box-shadow: 0 20px 70px rgba(125, 42, 150, 0.2);
-  animation: galaxy-drift 12s ease-in-out infinite alternate;
 }
 
-.hero-photo.hero-art a {
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  width: 34px;
+  height: 11px;
+  border: 1px solid rgba(201,168,117,.8);
+  border-radius: 50%;
+  top: 7px;
+  left: -5px;
+  transform: rotate(-32deg);
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.nav-links a {
+  transition: color .25s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--gold-light);
+}
+
+/* HERO */
+
+.hero {
+  min-height: 690px;
+  padding: 85px 7% 90px;
+  display: grid;
+  grid-template-columns: .92fr 1.08fr;
+  align-items: center;
+  gap: 55px;
+  position: relative;
+}
+
+.eyebrow,
+.section-number,
+.image-label,
+.hero-caption,
+.scroll-note {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  color: var(--gold);
+}
+
+.hero h1 {
+  font-size: clamp(48px, 6.5vw, 88px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -4px;
+  margin: 27px 0;
+}
+
+.hero h1 em {
+  font-family: var(--serif);
+  color: var(--gold-light);
+  font-weight: 500;
+}
+
+.hero-copy {
+  max-width: 490px;
+  color: #b6b6af;
+  font-size: 14px;
+  line-height: 2;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 32px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 13px 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  transition: .3s ease;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: #11110f;
+}
+
+.btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-3px);
+}
+
+.btn-outline {
+  border: 1px solid rgba(201,168,117,.45);
+  color: var(--gold-light);
+}
+
+.btn-outline:hover {
+  background: rgba(201,168,117,.1);
+  border-color: var(--gold);
+}
+
+.hero-visual {
+  position: relative;
+  min-width: 0;
+}
+
+.hero-photo {
+  position: relative;
+  height: 445px;
+  overflow: hidden;
+  background: #101216;
+  isolation: isolate;
+}
+
+.hero-photo a {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.hero-photo-image {
+.hero-photo img {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
   object-position: center;
-  animation: galaxy-expand 22s ease-in-out infinite alternate;
-  will-change: transform;
+  filter: brightness(.82) saturate(.83);
+  animation: heroZoom 28s ease-in-out infinite alternate;
 }
 
-.hero-photo.hero-art::after {
+.hero-photo::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   background: linear-gradient(
     0deg,
-    rgba(10, 5, 18, 0.8),
-    transparent 38%,
-    rgba(90, 35, 110, 0.08)
+    rgba(5,7,10,.75),
+    transparent 48%,
+    rgba(5,7,10,.08)
   );
 }
 
-.hero-photo .hero-caption {
+.hero-caption {
   position: absolute;
   z-index: 2;
-  bottom: 18px;
   left: 20px;
-  right: 20px;
-  color: #f2d9ff;
-  font-size: 11px;
-  letter-spacing: 2px;
+  bottom: 18px;
+  color: #e5d7bd;
+  font-size: 9px;
 }
 
-@keyframes galaxy-expand {
+@keyframes heroZoom {
   from { transform: scale(1); }
-  to { transform: scale(1.16); }
+  to { transform: scale(1.08); }
 }
 
-@keyframes galaxy-drift {
-  from { transform: translateY(-5px); }
-  to { transform: translateY(8px); }
+.scroll-note {
+  position: absolute;
+  bottom: 28px;
+  left: 7%;
+  color: var(--dim);
+  font-size: 9px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-photo.hero-art,
-  .hero-photo-image {
-    animation: none !important;
-  }
+/* SHARED SECTION STYLES */
+
+.section {
+  padding: 100px 8%;
+  position: relative;
 }
 
-@media (max-width: 650px) {
-  .hero-photo.hero-art {
-    height: 300px;
-    margin: 24px auto;
-  }
+.section-head {
+  max-width: 700px;
+  margin-bottom: 48px;
 }
 
-/* =====================================
-   CINEMATIC COSMIC IMAGE GALLERY
-===================================== */
+.section-number {
+  color: var(--gold);
+}
+
+.section h2,
+.gallery-heading h2 {
+  font-size: clamp(34px, 4.5vw, 58px);
+  font-weight: 400;
+  letter-spacing: -2px;
+  line-height: 1.12;
+  margin: 18px 0;
+}
+
+.section h2 em,
+.gallery-heading h2 em {
+  font-family: var(--serif);
+  color: var(--gold-light);
+  font-weight: 500;
+}
+
+.section-intro {
+  max-width: 630px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+/* COSMIC IMAGE ARCHIVE */
 
 .cosmic-gallery {
-  position: relative;
-  padding: 100px 7%;
-  overflow: hidden;
+  padding: 100px 8% 110px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255,255,255,.018) 45%,
+    transparent
+  );
 }
 
 .gallery-heading {
@@ -402,47 +345,46 @@ footer a{color:var(--lavender)}
   text-align: center;
 }
 
-.gallery-heading h2 {
-  font-size: clamp(34px, 5vw, 58px);
-  margin: 18px 0;
-}
-
-.gallery-heading h2 em {
-  color: #d49bff;
-}
-
-.gallery-heading p,
-.gallery-note {
-  color: #b9aabd;
-  line-height: 1.8;
+.gallery-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
 }
 
 .cosmic-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
   max-width: 1250px;
   margin: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 34px;
+  row-gap: 55px;
 }
 
 .cosmic-card {
   position: relative;
-  height: 340px;
+  height: 350px;
   overflow: hidden;
-  border-radius: 16px;
+  background: #0b0e12;
   isolation: isolate;
-  background: #160d20;
-  border: 1px solid rgba(211, 164, 255, .2);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, .3);
+}
+
+.cosmic-card a {
+  display: block;
+  height: 100%;
 }
 
 .cosmic-card img {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
-  transition: transform 1.2s ease, filter 1.2s ease;
-  will-change: transform;
+  filter: brightness(.8) saturate(.82);
+  transition: transform 1.3s ease, filter 1.3s ease;
+}
+
+.cosmic-card:hover img {
+  transform: scale(1.055);
+  filter: brightness(.98) saturate(.95);
 }
 
 .cosmic-card::after {
@@ -453,214 +395,435 @@ footer a{color:var(--lavender)}
   pointer-events: none;
   background: linear-gradient(
     0deg,
-    rgba(9, 4, 15, .94),
-    rgba(9, 4, 15, .12) 65%,
-    transparent
+    rgba(4,6,9,.94) 0%,
+    rgba(4,6,9,.35) 35%,
+    transparent 75%
   );
 }
 
 .cosmic-overlay {
   position: absolute;
   z-index: 2;
-  left: 22px;
-  right: 15px;
+  left: 24px;
+  right: 20px;
   bottom: 22px;
   pointer-events: none;
 }
 
 .cosmic-overlay span {
-  color: #e6b5ff;
+  color: var(--gold-light);
+  font-family: var(--mono);
   font-size: 9px;
-  letter-spacing: 2px;
+  letter-spacing: 1.8px;
 }
 
 .cosmic-overlay h3 {
-  color: #fff;
-  font-size: 23px;
+  color: #f2eee6;
+  font-size: 24px;
+  font-weight: 500;
   margin: 9px 0 5px;
 }
 
 .cosmic-overlay p {
-  color: #d4c3dc;
+  color: #c1bcb2;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .6px;
+  margin: 0;
+}
+
+.gallery-note {
+  max-width: 750px;
+  margin: 40px auto 0;
+  text-align: center;
+  color: var(--dim);
   font-size: 11px;
+  line-height: 1.8;
+}
+
+/* PROJECT OVERVIEW */
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 55px;
+  align-items: stretch;
+}
+
+.story-card {
+  padding: 5px 25px 5px 0;
+}
+
+.story-card h3,
+.method-card h3 {
+  font-size: 21px;
+  font-weight: 500;
+  margin: 0 0 17px;
+}
+
+.story-card p,
+.method-card p {
+  color: #aaa9a2;
+  font-size: 13px;
+  line-height: 2;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 25px;
+}
+
+.stat-card {
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+}
+
+.stat-value {
+  color: var(--gold-light);
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+
+.stat-label {
+  margin-top: 8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+}
+
+.targets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+  margin-top: 55px;
+}
+
+.target {
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+}
+
+.target small {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.4px;
+}
+
+.target h4 {
+  margin: 13px 0 8px;
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.target p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* METHODOLOGY */
+
+.method-section {
+  background: rgba(255,255,255,.018);
+}
+
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  margin: 55px 0 65px;
+  position: relative;
+}
+
+.pipeline::before {
+  content: "";
+  position: absolute;
+  top: 19px;
+  left: 11%;
+  right: 11%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: .5;
+}
+
+.step {
+  position: relative;
+  text-align: center;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 17px;
+  border: 1px solid rgba(201,168,117,.65);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--gold-light);
+  font-family: var(--mono);
+  font-size: 11px;
+  position: relative;
+  z-index: 1;
+}
+
+.step h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.step p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
+}
+
+.method-card {
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+}
+
+.method-card .tag {
+  display: block;
+  margin-bottom: 17px;
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+
+.feature-list {
+  padding: 0;
+  margin: 18px 0 0;
+  list-style: none;
+}
+
+.feature-list li {
+  padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,.07);
+  color: #c0bdb5;
+  font-size: 12px;
+}
+
+.feature-list li::before {
+  content: "—";
+  color: var(--gold);
+  margin-right: 10px;
+}
+
+/* SCIENTIFIC CONTEXT */
+
+.context-block {
+  margin-top: 75px;
+  padding: 35px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: .65fr 1.35fr;
+  gap: 45px;
+}
+
+.context-index {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  line-height: 2;
+}
+
+.context-copy h3 {
+  margin: 0 0 15px;
+  font-family: var(--serif);
+  font-size: 29px;
+  font-weight: 500;
+}
+
+.context-copy p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.95;
+}
+
+.caution {
+  margin-top: 20px;
+  padding-left: 15px;
+  border-left: 2px solid var(--gold);
+  color: var(--gold-light) !important;
+  font-size: 11px !important;
+}
+
+/* FOOTER */
+
+footer {
+  padding: 30px 8%;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 9px;
   letter-spacing: 1px;
 }
 
-.cosmic-card:hover img {
-  transform: scale(1.12);
-  filter: brightness(1.12);
+footer a {
+  color: var(--gold-light);
+  transition: color .2s;
 }
 
-.cosmic-note,
-.gallery-note {
-  text-align: center;
-  max-width: 750px;
-  margin: 35px auto 0;
-  font-size: 11px;
+footer a:hover {
+  color: white;
 }
 
-/* Different motion for each cosmic object */
+/* RESPONSIVE */
 
-.galaxy-card img {
-  animation: galaxy-float 17s ease-in-out infinite alternate;
-}
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    padding-top: 75px;
+  }
 
-.pillars-card img {
-  animation: pillars-rise 20s ease-in-out infinite alternate;
-}
+  .hero-visual {
+    max-width: 750px;
+  }
 
-.darkmatter-card img {
-  animation: dark-pulse 9s ease-in-out infinite alternate;
-}
+  .hero-photo {
+    height: 390px;
+  }
 
-.web-card img {
-  animation: web-drift 24s ease-in-out infinite alternate;
-}
+  .overview-grid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
 
-.blackhole-card img {
-  animation: blackhole-drift 15s ease-in-out infinite alternate;
-}
+  .story-card {
+    padding-right: 0;
+  }
 
-.quasar-card img {
-  animation: quasar-expand 13s ease-in-out infinite alternate;
-}
-
-/* Galaxy slowly expands and drifts */
-
-@keyframes galaxy-float {
-  from { transform: scale(1.02) translate(-1%, 0); }
-  to { transform: scale(1.15) translate(1%, -2%); }
-}
-
-/* Pillars gently rise */
-
-@keyframes pillars-rise {
-  from { transform: scale(1.04) translateY(1%); }
-  to { transform: scale(1.13) translateY(-2%); }
-}
-
-/* Dark matter glow breathes */
-
-@keyframes dark-pulse {
-  from { transform: scale(1.02); filter: brightness(.85); }
-  to { transform: scale(1.13); filter: brightness(1.2); }
-}
-
-/* Cosmic web slowly travels */
-
-@keyframes web-drift {
-  from { transform: scale(1.08) translateX(-2%); }
-  to { transform: scale(1.15) translateX(2%); }
-}
-
-/* Black hole image gently revolves in perspective */
-
-@keyframes blackhole-drift {
-  from { transform: scale(1.04) rotate(-1deg); }
-  to { transform: scale(1.12) rotate(1deg); }
-}
-
-/* Quasar expands like an energetic source */
-
-@keyframes quasar-expand {
-  from { transform: scale(1.02); filter: brightness(.9); }
-  to { transform: scale(1.14); filter: brightness(1.18); }
-}
-
-/* Subtle revolving light ring around black hole card */
-
-.blackhole-card::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  width: 65%;
-  height: 45%;
-  left: 17%;
-  top: 17%;
-  border: 1px solid rgba(255, 190, 130, .5);
-  border-radius: 50%;
-  transform: rotate(-25deg);
-  box-shadow: 0 0 18px rgba(255, 150, 90, .2);
-  animation: blackhole-ring 12s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes blackhole-ring {
-  from { transform: rotate(-25deg) scale(1); }
-  to { transform: rotate(335deg) scale(1.08); }
-}
-
-/* Quasar jet-like light beam */
-
-.quasar-card::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  width: 12%;
-  height: 150%;
-  left: 48%;
-  top: -25%;
-  background: linear-gradient(
-    transparent,
-    rgba(255, 195, 160, .24),
-    rgba(231, 151, 255, .5),
-    transparent
-  );
-  filter: blur(12px);
-  transform: rotate(35deg);
-  animation: quasar-beam 5s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-
-@keyframes quasar-beam {
-  from { opacity: .25; transform: rotate(35deg) scaleY(.8); }
-  to { opacity: .85; transform: rotate(35deg) scaleY(1.2); }
-}
-
-@media (max-width: 850px) {
-  .cosmic-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .context-block {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 650px) {
+  .nav {
+    padding: 14px 5%;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .nav-links {
+    gap: 15px;
+    font-size: 8px;
+  }
+
+  .brand {
+    font-size: 10px;
+  }
+
+  .hero {
+    padding: 65px 6% 75px;
+  }
+
+  .hero h1 {
+    letter-spacing: -2px;
+  }
+
+  .hero-photo {
+    height: 300px;
+  }
+
+  .scroll-note {
+    left: 6%;
+  }
+
+  .section {
+    padding: 75px 6%;
+  }
+
   .cosmic-gallery {
-    padding: 70px 6%;
+    padding: 75px 6%;
   }
 
   .cosmic-grid {
     grid-template-columns: 1fr;
+    row-gap: 32px;
   }
 
   .cosmic-card {
     height: 300px;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .cosmic-card img,
-  .blackhole-card::before,
-  .quasar-card::before {
-    animation: none !important;
-    transition: none !important;
+  .targets,
+  .method-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .pipeline {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 35px;
+  }
+
+  .pipeline::before {
+    display: none;
+  }
+
+  .stats-grid {
+    gap: 0 18px;
+  }
+
+  .stat-value {
+    font-size: 30px;
+  }
+
+  footer {
+    padding: 25px 6%;
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
 </style>
 </head>
 
 <body>
-<canvas id="stars"></canvas>
-<div class="space-glow"></div>
-<div class="nebula one"></div>
-<div class="nebula two"></div>
-<div class="nebula three"></div>
+
+<canvas id="stars" aria-hidden="true"></canvas>
 
 <nav class="nav">
   <a class="brand" href="index.html">
-    <span class="brand-mark"></span>
+    <span class="brand-mark" aria-hidden="true"></span>
     GALAXY / EVOLUTION
   </a>
+
   <div class="nav-links">
     <a class="active" href="index.html">01 Overview</a>
     <a href="results.html">02 Results</a>
@@ -669,105 +832,137 @@ footer a{color:var(--lavender)}
 </nav>
 
 <header class="hero">
-  <div>
-    <div class="eyebrow">✦ A machine learning journey through the cosmos</div>
-    <h1>Reading the<br><em>life of galaxies.</em></h1>
+  <div class="hero-content">
+    <div class="eyebrow">A MACHINE LEARNING JOURNEY THROUGH THE COSMOS</div>
+
+    <h1>
+      Reading the<br>
+      <em>life of galaxies.</em>
+    </h1>
+
     <p class="hero-copy">
       Every galaxy carries a story in its light. This project explores how
       machine learning can learn patterns from astronomical observations
       to estimate stellar mass and star-formation activity.
     </p>
+
     <div class="hero-actions">
       <a class="btn btn-primary" href="#overview">Enter the observatory ↗</a>
       <a class="btn btn-outline" href="results.html">View discoveries</a>
     </div>
   </div>
 
-<div class="hero-photo hero-art" aria-label="Real Hubble observation of the Whirlpool Galaxy">
-  <a href="https://science.nasa.gov/image-detail/hubble_m51/" target="_blank" rel="noopener">
-    <img
-      src="https://science.nasa.gov/wp-content/uploads/2023/04/hubble_m51-jpg-e1688472875538.webp"
-      alt="Whirlpool Galaxy M51 photographed by the Hubble Space Telescope"
-      class="hero-photo-image"
-    >
-  </a>
-  <div class="hero-caption">
-    FIG 01 — WHIRLPOOL GALAXY (M51) · NASA / ESA / HUBBLE
+  <div class="hero-visual">
+    <div class="hero-photo">
+      <a href="https://science.nasa.gov/image-detail/hubble_m51/" target="_blank" rel="noopener noreferrer">
+        <img
+          src="https://science.nasa.gov/wp-content/uploads/2023/04/hubble_m51-jpg-e1688472875538.webp"
+          alt="Whirlpool Galaxy M51 photographed by the Hubble Space Telescope"
+          fetchpriority="high">
+      </a>
+
+      <div class="hero-caption">
+        FIG 01 — WHIRLPOOL GALAXY M51 · NASA / ESA / HUBBLE
+      </div>
+    </div>
   </div>
-</div>
-<div class="scroll-note">SCROLL TO EXPLORE &nbsp; ↓</div>
+
+  <div class="scroll-note">SCROLL TO EXPLORE &nbsp; ↓</div>
 </header>
 
-</header>
+<!-- COSMIC IMAGE ARCHIVE -->
 
 <section class="cosmic-gallery" id="cosmic-gallery">
   <div class="gallery-heading">
     <div class="section-number">COSMIC ARCHIVE / 06 FRAMES</div>
+
     <h2>Beyond the <em>visible universe.</em></h2>
-    <p>Real observations and scientific maps revealing the structures of our universe.</p>
+
+    <p>
+      From distant galaxies to invisible cosmic structures,
+      explore some of the remarkable phenomena studied by modern astronomy.
+    </p>
   </div>
 
   <div class="cosmic-grid">
 
-    <article class="cosmic-card galaxy-card">
-      <img src="https://science.nasa.gov/wp-content/uploads/2023/04/hubble_m51-jpg-e1688472875538.webp"
-           alt="Whirlpool Galaxy M51" loading="lazy">
+    <article class="cosmic-card">
+      <img
+        src="https://svs.gsfc.nasa.gov/vis/a030000/a030800/a030855/sombrero-hst-c169-5760x3240_print.jpg"
+        alt="Sombrero Galaxy M104 photographed by Hubble"
+        loading="lazy">
+
       <div class="cosmic-overlay">
-        <span>01 / SPIRAL GALAXY</span>
-        <h3>Whirlpool Galaxy</h3>
-        <p>M51 · NASA / ESA Hubble</p>
+        <span>01 / EDGE-ON GALAXY</span>
+        <h3>Sombrero Galaxy</h3>
+        <p>M104 · NASA / ESA / HUBBLE</p>
       </div>
     </article>
 
-    <article class="cosmic-card pillars-card">
-      <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/webb/science/2022/10/STScI-01GGF8H15VZ09MET9HFBRQX4S3.png?fit=clip&h=2000&w=1155"
-           alt="Pillars of Creation" loading="lazy">
+    <article class="cosmic-card">
+      <img
+        src="https://svs.gsfc.nasa.gov/vis/a030000/a031200/a031285/STScI-01G8GYD8B1H306SSPR4MY6NGN0-comp-hw.png"
+        alt="Cosmic Cliffs in the Carina Nebula observed by the James Webb Space Telescope"
+        loading="lazy">
+
       <div class="cosmic-overlay">
-        <span>02 / STAR FORMATION</span>
-        <h3>Pillars of Creation</h3>
-        <p>James Webb Space Telescope</p>
+        <span>02 / STELLAR NURSERY</span>
+        <h3>Cosmic Cliffs</h3>
+        <p>CARINA NEBULA · NASA / ESA / CSA / WEBB</p>
       </div>
     </article>
 
-    <article class="cosmic-card darkmatter-card">
-      <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2008/01/STScI-01EVT6N2AFE6FQ1Y9707790A4Z.jpg?fit=clip&h=1600&w=2000"
-           alt="Hubble dark matter distribution map" loading="lazy">
+    <article class="cosmic-card">
+      <img
+        src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2008/01/STScI-01EVT6N2AFE6FQ1Y9707790A4Z.jpg?fit=clip&h=1600&w=2000"
+        alt="Hubble scientific map showing inferred dark matter distribution in a galaxy cluster"
+        loading="lazy">
+
       <div class="cosmic-overlay">
         <span>03 / INVISIBLE STRUCTURE</span>
         <h3>Dark Matter Map</h3>
-        <p>Hubble · Galaxy Cluster</p>
+        <p>HUBBLE · GALAXY CLUSTER</p>
       </div>
     </article>
 
-    <article class="cosmic-card web-card">
-      <img src="https://cdn.esahubble.org/archives/images/large/heic0802a.jpg"
-           alt="Cosmic web and galaxy distribution" loading="lazy">
+    <article class="cosmic-card">
+      <img
+        src="https://cdn.esahubble.org/archives/images/large/heic0802a.jpg"
+        alt="Large-scale cosmic web and galaxy distribution"
+        loading="lazy">
+
       <div class="cosmic-overlay">
         <span>04 / COSMIC STRUCTURE</span>
         <h3>The Cosmic Web</h3>
-        <p>Large-scale galaxy structure</p>
+        <p>LARGE-SCALE GALAXY STRUCTURE</p>
       </div>
     </article>
 
-    <article class="cosmic-card blackhole-card">
-      <a href="https://science.nasa.gov/resource/first-image-of-a-black-hole/" target="_blank" rel="noopener">
-        <img src="https://cdn.eso.org/images/publicationjpg/eso1907a.jpg"
-             alt="Event Horizon Telescope image of M87 star black hole" loading="lazy">
+    <article class="cosmic-card">
+      <a href="https://science.nasa.gov/resource/first-image-of-a-black-hole/" target="_blank" rel="noopener noreferrer">
+        <img
+          src="https://cdn.eso.org/images/publicationjpg/eso1907a.jpg"
+          alt="Event Horizon Telescope image of the supermassive black hole M87 star"
+          loading="lazy">
       </a>
+
       <div class="cosmic-overlay">
         <span>05 / EVENT HORIZON</span>
         <h3>Black Hole M87*</h3>
-        <p>Event Horizon Telescope</p>
+        <p>EVENT HORIZON TELESCOPE</p>
       </div>
     </article>
 
-    <article class="cosmic-card quasar-card">
-      <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2024/12/STScI-01JD58JQYHC8VXZFHF5NT605NA.png?w=2000"
-           alt="Quasar 3C 273 observed by Hubble" loading="lazy">
+    <article class="cosmic-card">
+      <img
+        src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2024/12/STScI-01JD58JQYHC8VXZFHF5NT605NA.png?w=2000"
+        alt="Quasar 3C 273 observed by the Hubble Space Telescope"
+        loading="lazy">
+
       <div class="cosmic-overlay">
         <span>06 / ACTIVE GALACTIC NUCLEUS</span>
         <h3>Quasar 3C 273</h3>
-        <p>NASA / ESA Hubble</p>
+        <p>NASA / ESA / HUBBLE</p>
       </div>
     </article>
 
@@ -781,31 +976,38 @@ footer a{color:var(--lavender)}
 
 <main>
 
-  <main>
+<!-- PROJECT OVERVIEW -->
+
 <section class="section" id="overview">
   <div class="section-head">
     <div class="section-number">01 / THE PROJECT</div>
+
     <h2>Turning observations into <em>predictions.</em></h2>
+
     <p class="section-intro">
-      A data-driven study using the KiDS DR4 galaxy catalogue. We train
-      two separate regression models to reproduce catalogue estimates
-      of two important galaxy properties.
+      A data-driven study using the KiDS DR4 galaxy catalogue.
+      We train two separate regression models to reproduce catalogue
+      estimates of two important galaxy properties.
     </p>
   </div>
 
   <div class="overview-grid">
+
     <article class="story-card">
       <h3>A universe written in numbers.</h3>
+
       <p>
         Astronomical surveys capture light from enormous populations of
         distant galaxies. Their measured photometric properties contain
         patterns that machine learning models can learn.
       </p>
+
       <p>
         Our workflow uses nine GAaP magnitude bands, their nine associated
         magnitude errors, and GaZNet redshift as input features. Two
         independent models estimate stellar mass and star-formation rate.
       </p>
+
       <p>
         The goal is to explore how effectively these catalogue values can
         be reproduced from the selected observations.
@@ -817,39 +1019,56 @@ footer a{color:var(--lavender)}
         <div class="stat-value">288,809</div>
         <div class="stat-label">Galaxy records</div>
       </div>
+
       <div class="stat-card">
         <div class="stat-value">135</div>
         <div class="stat-label">Catalogue columns</div>
       </div>
+
       <div class="stat-card">
         <div class="stat-value">19</div>
         <div class="stat-label">Selected input features</div>
       </div>
+
       <div class="stat-card">
         <div class="stat-value">02</div>
         <div class="stat-label">Prediction models</div>
       </div>
     </div>
+
   </div>
 
   <div class="targets">
+
     <div class="target">
       <small>TARGET 01 / STELLAR MASS</small>
       <h4>How much stellar matter?</h4>
-      <p>Estimates the catalogue value stored in <b>MASS_MED_GaZNet</b>.</p>
+      <p>
+        Estimates the catalogue value stored in
+        <b>MASS_MED_GaZNet</b>.
+      </p>
     </div>
+
     <div class="target">
       <small>TARGET 02 / STAR FORMATION</small>
       <h4>How actively are stars forming?</h4>
-      <p>Estimates the catalogue value stored in <b>SFR_MED_GaZNet</b>.</p>
+      <p>
+        Estimates the catalogue value stored in
+        <b>SFR_MED_GaZNet</b>.
+      </p>
     </div>
+
   </div>
 </section>
+
+<!-- METHODOLOGY -->
 
 <section class="section method-section" id="methodology">
   <div class="section-head">
     <div class="section-number">02 / THE METHODOLOGY</div>
+
     <h2>From starlight to <em>machine learning.</em></h2>
+
     <p class="section-intro">
       A structured pipeline takes the catalogue through feature selection,
       model training and evaluation.
@@ -857,125 +1076,185 @@ footer a{color:var(--lavender)}
   </div>
 
   <div class="pipeline">
+
     <div class="step">
-      <div class="step-orb">01</div>
+      <div class="step-number">01</div>
       <h4>Catalogue</h4>
       <p>KiDS DR4 galaxy observations</p>
     </div>
+
     <div class="step">
-      <div class="step-orb">02</div>
+      <div class="step-number">02</div>
       <h4>Features</h4>
       <p>19 selected photometric and redshift inputs</p>
     </div>
+
     <div class="step">
-      <div class="step-orb">03</div>
+      <div class="step-number">03</div>
       <h4>Training</h4>
       <p>Two independent regression models</p>
     </div>
+
     <div class="step">
-      <div class="step-orb">04</div>
+      <div class="step-number">04</div>
       <h4>Evaluation</h4>
       <p>MAE, RMSE and R² test metrics</p>
     </div>
+
   </div>
 
   <div class="method-grid">
+
     <article class="method-card">
       <span class="tag">MODEL A / REGRESSION</span>
+
       <h3>Stellar mass model</h3>
+
       <p>
         A HistGradientBoostingRegressor learns relationships between
         the selected input features and the catalogue's stellar-mass estimate.
       </p>
+
       <ul class="feature-list">
         <li>Target: MASS_MED_GaZNet</li>
         <li>Gradient-boosted decision trees</li>
         <li>Evaluated on held-out test data</li>
       </ul>
     </article>
+
     <article class="method-card">
       <span class="tag">MODEL B / REGRESSION</span>
+
       <h3>Star-formation model</h3>
+
       <p>
         A separate HistGradientBoostingRegressor learns patterns associated
         with the catalogue's star-formation-rate estimate.
       </p>
+
       <ul class="feature-list">
         <li>Target: SFR_MED_GaZNet</li>
         <li>Independent model training</li>
         <li>Evaluated on held-out test data</li>
       </ul>
     </article>
+
   </div>
 
-  <div class="halo-wrap">
-    <div class="halo-art" aria-label="Animated conceptual dark matter halo">
-      <div class="halo-ring"></div>
-      <div class="halo-ring r2"></div>
-      <div class="halo-ring r3"></div>
-      <div class="halo-core"></div>
-      <span class="halo-particle" style="left:20%;top:65%"></span>
-      <span class="halo-particle p2"></span>
-      <span class="halo-particle p3"></span>
-      <span class="halo-particle p4"></span>
+  <!-- SCIENTIFIC CONTEXT -->
+
+  <div class="context-block">
+
+    <div class="context-index">
+      COSMIC CONTEXT<br>
+      BEYOND THE MODEL
     </div>
-    <div class="halo-copy">
-      <div class="section-number">COSMIC CONTEXT / BEYOND THE MODEL</div>
+
+    <div class="context-copy">
       <h3>The invisible architecture of the universe.</h3>
+
       <p>
         Galaxies are commonly studied in the context of dark matter halos:
         vast, invisible structures whose gravity influences how galaxies
         form and evolve. Their study is an important part of modern cosmology.
       </p>
+
       <p class="caution">
-        This animated halo is a conceptual scientific illustration.
         Dark matter, halo mass and gravitational lensing are not direct
-        prediction outputs of this project's two ML models.
+        prediction outputs of this project's two ML models. This project
+        focuses on reproducing catalogue estimates of stellar mass and
+        star-formation rate.
       </p>
     </div>
+
   </div>
 </section>
+
 </main>
 
 <footer>
-  <span>GALAXY EVOLUTION PREDICTOR · KI DS DR4</span>
+  <span>GALAXY EVOLUTION PREDICTOR · KiDS DR4</span>
   <span>AN EXPLORATION OF GALAXY PROPERTIES</span>
   <a href="results.html">Continue to results ↗</a>
 </footer>
 
 <script>
-/* Procedural star field */
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
-let stars=[];
-let width,height;
-function resize(){
-  width=canvas.width=window.innerWidth;
-  height=canvas.height=window.innerHeight;
-  stars=Array.from({length:Math.min(230,Math.floor(width*height/6500))},()=>({
-    x:Math.random()*width,y:Math.random()*height,
-    r:Math.random()*1.35+.2,
-    a:Math.random()*.65+.2,
-    speed:Math.random()*.012+.002,
-    phase:Math.random()*Math.PI*2,
-    colour:Math.random()>.78?"255,183,137":Math.random()>.45?"219,147,220":"255,255,255"
+/* Subtle procedural star field */
+
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+let stars = [];
+let width = 0;
+let height = 0;
+
+const reduceMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+
+function resizeStars() {
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+
+  width = window.innerWidth;
+  height = window.innerHeight;
+
+  canvas.width = width * ratio;
+  canvas.height = height * ratio;
+
+  canvas.style.width = width + "px";
+  canvas.style.height = height + "px";
+
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+  const count = Math.min(
+    190,
+    Math.floor(width * height / 8000)
+  );
+
+  stars = Array.from({ length: count }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    radius: Math.random() * 1.1 + .2,
+    opacity: Math.random() * .55 + .15,
+    phase: Math.random() * Math.PI * 2,
+    speed: Math.random() * .008 + .002
   }));
 }
-function draw(){
-  ctx.clearRect(0,0,width,height);
-  stars.forEach(s=>{
-    s.phase+=s.speed;
-    const alpha=s.a*(.55+.45*Math.sin(s.phase));
+
+function drawStars() {
+  ctx.clearRect(0, 0, width, height);
+
+  stars.forEach(star => {
+    if (!reduceMotion) {
+      star.phase += star.speed;
+    }
+
+    const opacity = reduceMotion
+      ? star.opacity
+      : star.opacity * (.65 + .35 * Math.sin(star.phase));
+
     ctx.beginPath();
-    ctx.fillStyle=`rgba(${s.colour},${alpha})`;
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle = `rgba(231, 218, 194, ${opacity})`;
+    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
     ctx.fill();
   });
-  requestAnimationFrame(draw);
+
+  if (!reduceMotion) {
+    requestAnimationFrame(drawStars);
+  }
 }
-window.addEventListener("resize",resize);
-resize();
-draw();
+
+window.addEventListener("resize", () => {
+  resizeStars();
+
+  if (reduceMotion) {
+    drawStars();
+  }
+});
+
+resizeStars();
+drawStars();
 </script>
+
 </body>
 </html>
