@@ -279,6 +279,346 @@ footer a{color:var(--lavender)}
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
 }
+
+/* REAL COSMIC IMAGE — CINEMATIC MOTION */
+.hero-photo.hero-art {
+  position: relative;
+  width: min(100%, 680px);
+  height: 430px;
+  margin: 35px auto;
+  overflow: hidden;
+  border-radius: 22px;
+  isolation: isolate;
+  background: #100817;
+  border: 1px solid rgba(205, 150, 255, 0.25);
+  box-shadow: 0 20px 70px rgba(125, 42, 150, 0.2);
+  animation: galaxy-drift 12s ease-in-out infinite alternate;
+}
+
+.hero-photo.hero-art a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-photo-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  animation: galaxy-expand 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.hero-photo.hero-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    0deg,
+    rgba(10, 5, 18, 0.8),
+    transparent 38%,
+    rgba(90, 35, 110, 0.08)
+  );
+}
+
+.hero-photo .hero-caption {
+  position: absolute;
+  z-index: 2;
+  bottom: 18px;
+  left: 20px;
+  right: 20px;
+  color: #f2d9ff;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+@keyframes galaxy-expand {
+  from { transform: scale(1); }
+  to { transform: scale(1.16); }
+}
+
+@keyframes galaxy-drift {
+  from { transform: translateY(-5px); }
+  to { transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo.hero-art,
+  .hero-photo-image {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .hero-photo.hero-art {
+    height: 300px;
+    margin: 24px auto;
+  }
+}
+
+/* =====================================
+   CINEMATIC COSMIC IMAGE GALLERY
+===================================== */
+
+.cosmic-gallery {
+  position: relative;
+  padding: 100px 7%;
+  overflow: hidden;
+}
+
+.gallery-heading {
+  max-width: 760px;
+  margin: 0 auto 55px;
+  text-align: center;
+}
+
+.gallery-heading h2 {
+  font-size: clamp(34px, 5vw, 58px);
+  margin: 18px 0;
+}
+
+.gallery-heading h2 em {
+  color: #d49bff;
+}
+
+.gallery-heading p,
+.gallery-note {
+  color: #b9aabd;
+  line-height: 1.8;
+}
+
+.cosmic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  max-width: 1250px;
+  margin: auto;
+}
+
+.cosmic-card {
+  position: relative;
+  height: 340px;
+  overflow: hidden;
+  border-radius: 16px;
+  isolation: isolate;
+  background: #160d20;
+  border: 1px solid rgba(211, 164, 255, .2);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, .3);
+}
+
+.cosmic-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 1.2s ease, filter 1.2s ease;
+  will-change: transform;
+}
+
+.cosmic-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    0deg,
+    rgba(9, 4, 15, .94),
+    rgba(9, 4, 15, .12) 65%,
+    transparent
+  );
+}
+
+.cosmic-overlay {
+  position: absolute;
+  z-index: 2;
+  left: 22px;
+  right: 15px;
+  bottom: 22px;
+  pointer-events: none;
+}
+
+.cosmic-overlay span {
+  color: #e6b5ff;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.cosmic-overlay h3 {
+  color: #fff;
+  font-size: 23px;
+  margin: 9px 0 5px;
+}
+
+.cosmic-overlay p {
+  color: #d4c3dc;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.cosmic-card:hover img {
+  transform: scale(1.12);
+  filter: brightness(1.12);
+}
+
+.cosmic-note,
+.gallery-note {
+  text-align: center;
+  max-width: 750px;
+  margin: 35px auto 0;
+  font-size: 11px;
+}
+
+/* Different motion for each cosmic object */
+
+.galaxy-card img {
+  animation: galaxy-float 17s ease-in-out infinite alternate;
+}
+
+.pillars-card img {
+  animation: pillars-rise 20s ease-in-out infinite alternate;
+}
+
+.darkmatter-card img {
+  animation: dark-pulse 9s ease-in-out infinite alternate;
+}
+
+.web-card img {
+  animation: web-drift 24s ease-in-out infinite alternate;
+}
+
+.blackhole-card img {
+  animation: blackhole-drift 15s ease-in-out infinite alternate;
+}
+
+.quasar-card img {
+  animation: quasar-expand 13s ease-in-out infinite alternate;
+}
+
+/* Galaxy slowly expands and drifts */
+
+@keyframes galaxy-float {
+  from { transform: scale(1.02) translate(-1%, 0); }
+  to { transform: scale(1.15) translate(1%, -2%); }
+}
+
+/* Pillars gently rise */
+
+@keyframes pillars-rise {
+  from { transform: scale(1.04) translateY(1%); }
+  to { transform: scale(1.13) translateY(-2%); }
+}
+
+/* Dark matter glow breathes */
+
+@keyframes dark-pulse {
+  from { transform: scale(1.02); filter: brightness(.85); }
+  to { transform: scale(1.13); filter: brightness(1.2); }
+}
+
+/* Cosmic web slowly travels */
+
+@keyframes web-drift {
+  from { transform: scale(1.08) translateX(-2%); }
+  to { transform: scale(1.15) translateX(2%); }
+}
+
+/* Black hole image gently revolves in perspective */
+
+@keyframes blackhole-drift {
+  from { transform: scale(1.04) rotate(-1deg); }
+  to { transform: scale(1.12) rotate(1deg); }
+}
+
+/* Quasar expands like an energetic source */
+
+@keyframes quasar-expand {
+  from { transform: scale(1.02); filter: brightness(.9); }
+  to { transform: scale(1.14); filter: brightness(1.18); }
+}
+
+/* Subtle revolving light ring around black hole card */
+
+.blackhole-card::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 65%;
+  height: 45%;
+  left: 17%;
+  top: 17%;
+  border: 1px solid rgba(255, 190, 130, .5);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  box-shadow: 0 0 18px rgba(255, 150, 90, .2);
+  animation: blackhole-ring 12s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes blackhole-ring {
+  from { transform: rotate(-25deg) scale(1); }
+  to { transform: rotate(335deg) scale(1.08); }
+}
+
+/* Quasar jet-like light beam */
+
+.quasar-card::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 12%;
+  height: 150%;
+  left: 48%;
+  top: -25%;
+  background: linear-gradient(
+    transparent,
+    rgba(255, 195, 160, .24),
+    rgba(231, 151, 255, .5),
+    transparent
+  );
+  filter: blur(12px);
+  transform: rotate(35deg);
+  animation: quasar-beam 5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes quasar-beam {
+  from { opacity: .25; transform: rotate(35deg) scaleY(.8); }
+  to { opacity: .85; transform: rotate(35deg) scaleY(1.2); }
+}
+
+@media (max-width: 850px) {
+  .cosmic-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .cosmic-gallery {
+    padding: 70px 6%;
+  }
+
+  .cosmic-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cosmic-card {
+    height: 300px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-card img,
+  .blackhole-card::before,
+  .quasar-card::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 </style>
 </head>
 
@@ -316,19 +656,105 @@ footer a{color:var(--lavender)}
     </div>
   </div>
 
-  <div class="hero-art" aria-label="Animated spiral galaxy illustration">
-    <div class="galaxy">
-      <div class="galaxy-core"></div>
-      <div class="orbit"></div>
-      <div class="orbit two"></div>
-      <div class="orbit-dot"></div>
-    </div>
-    <div class="hero-caption">FIG 01 — SPIRAL GALAXY / ARTISTIC VISUAL</div>
+<div class="hero-photo hero-art" aria-label="Real Hubble observation of the Whirlpool Galaxy">
+  <a href="https://science.nasa.gov/image-detail/hubble_m51/" target="_blank" rel="noopener">
+    <img
+      src="https://science.nasa.gov/wp-content/uploads/2023/04/hubble_m51-jpg-e1688472875538.webp"
+      alt="Whirlpool Galaxy M51 photographed by the Hubble Space Telescope"
+      class="hero-photo-image"
+    >
+  </a>
+  <div class="hero-caption">
+    FIG 01 — WHIRLPOOL GALAXY (M51) · NASA / ESA / HUBBLE
   </div>
-  <div class="scroll-note">SCROLL TO EXPLORE &nbsp; ↓</div>
+</div>
+<div class="scroll-note">SCROLL TO EXPLORE &nbsp; ↓</div>
 </header>
 
+</header>
+
+<section class="cosmic-gallery" id="cosmic-gallery">
+  <div class="gallery-heading">
+    <div class="section-number">COSMIC ARCHIVE / 06 FRAMES</div>
+    <h2>Beyond the <em>visible universe.</em></h2>
+    <p>Real observations and scientific maps revealing the structures of our universe.</p>
+  </div>
+
+  <div class="cosmic-grid">
+
+    <article class="cosmic-card galaxy-card">
+      <img src="https://science.nasa.gov/wp-content/uploads/2023/04/hubble_m51-jpg-e1688472875538.webp"
+           alt="Whirlpool Galaxy M51" loading="lazy">
+      <div class="cosmic-overlay">
+        <span>01 / SPIRAL GALAXY</span>
+        <h3>Whirlpool Galaxy</h3>
+        <p>M51 · NASA / ESA Hubble</p>
+      </div>
+    </article>
+
+    <article class="cosmic-card pillars-card">
+      <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/webb/science/2022/10/STScI-01GGF8H15VZ09MET9HFBRQX4S3.png?fit=clip&h=2000&w=1155"
+           alt="Pillars of Creation" loading="lazy">
+      <div class="cosmic-overlay">
+        <span>02 / STAR FORMATION</span>
+        <h3>Pillars of Creation</h3>
+        <p>James Webb Space Telescope</p>
+      </div>
+    </article>
+
+    <article class="cosmic-card darkmatter-card">
+      <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2008/01/STScI-01EVT6N2AFE6FQ1Y9707790A4Z.jpg?fit=clip&h=1600&w=2000"
+           alt="Hubble dark matter distribution map" loading="lazy">
+      <div class="cosmic-overlay">
+        <span>03 / INVISIBLE STRUCTURE</span>
+        <h3>Dark Matter Map</h3>
+        <p>Hubble · Galaxy Cluster</p>
+      </div>
+    </article>
+
+    <article class="cosmic-card web-card">
+      <img src="https://cdn.esahubble.org/archives/images/large/heic0802a.jpg"
+           alt="Cosmic web and galaxy distribution" loading="lazy">
+      <div class="cosmic-overlay">
+        <span>04 / COSMIC STRUCTURE</span>
+        <h3>The Cosmic Web</h3>
+        <p>Large-scale galaxy structure</p>
+      </div>
+    </article>
+
+    <article class="cosmic-card blackhole-card">
+      <a href="https://science.nasa.gov/resource/first-image-of-a-black-hole/" target="_blank" rel="noopener">
+        <img src="https://cdn.eso.org/images/publicationjpg/eso1907a.jpg"
+             alt="Event Horizon Telescope image of M87 star black hole" loading="lazy">
+      </a>
+      <div class="cosmic-overlay">
+        <span>05 / EVENT HORIZON</span>
+        <h3>Black Hole M87*</h3>
+        <p>Event Horizon Telescope</p>
+      </div>
+    </article>
+
+    <article class="cosmic-card quasar-card">
+      <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2024/12/STScI-01JD58JQYHC8VXZFHF5NT605NA.png?w=2000"
+           alt="Quasar 3C 273 observed by Hubble" loading="lazy">
+      <div class="cosmic-overlay">
+        <span>06 / ACTIVE GALACTIC NUCLEUS</span>
+        <h3>Quasar 3C 273</h3>
+        <p>NASA / ESA Hubble</p>
+      </div>
+    </article>
+
+  </div>
+
+  <p class="gallery-note">
+    Images and scientific visualisations: NASA, ESA, CSA, STScI and EHT.
+    Dark matter maps represent inferred distributions, not direct photographs.
+  </p>
+</section>
+
 <main>
+
+  <main>
 <section class="section" id="overview">
   <div class="section-head">
     <div class="section-number">01 / THE PROJECT</div>
